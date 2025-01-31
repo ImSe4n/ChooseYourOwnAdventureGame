@@ -107,6 +107,7 @@ def wordle():
         if guess == secret_word:
             print("\033[92mCongratulations! You guessed the word!\033[0m")
             inventory.append('s_key')
+            return None
 
         feedback = ""
         for i in range(5):
@@ -127,12 +128,16 @@ def tarmac():
     """
     Function: tarmac
     Description: This function represents the tarmac location where the player starts. The player can choose to go to the terminal or stay here.
-    Parameters: None
+    Args: None
     Returns: str
     """
-    print("You are on the tarmac. You see a key on the ground.")
+    print("You are on the tarmac. You are given a key to the terminal.")
     print("You can go to the terminal or stay here.")
-    choice = input("Enter '2' to go to the terminal or '1' to stay here: ")
+    choice = input("Enter \n '1' to stay here \n '2' to go to the terminal \n 'e' to quit the game \n")
+
+    while choice != '1' and choice != '2' and choice != 'e':
+        print("Invalid choice. Please enter a valid choice.")
+        choice = input("Enter \n '1' to stay here \n '2' to go to the terminal \n 'e' to quit the game \n")
     return choice
 
 
@@ -145,6 +150,7 @@ def terminal():
     """
     if 'atc_key' and 's_key' in inventory:
         print("You have all the keys and can go to the air traffic control tower and hangar.")
+        return '5'
     print("You are in the terminal. You can go to the lounge, ticket counter, or security checkpoint.")
     print("You can go to the lounge, ticket counter, or security checkpoint.")
     choice = input(
