@@ -7,7 +7,6 @@ At least 2 of your functions must return values.
 The user has choices to make throughout the program (e.g. where to go next, whether to pick up an item, etc.)
 The program main or a main function has a loop that serves as the central base for the program. All other location functions are called from and return to the main loop.
 Header, comments, and docstrings for all functions.
-GUI is required for this assignment, use Tkinter.
 """
 # CRIERIA
 """
@@ -107,7 +106,7 @@ def wordle():
         if guess == secret_word:
             print("\033[92mCongratulations! You guessed the word!\033[0m")
             inventory.append('s_key')
-            return None
+            return '2'
 
         feedback = ""
         for i in range(5):
@@ -122,6 +121,7 @@ def wordle():
 
     print(f"Game over! The word was: {secret_word}. Please try again in 15 seconds.")
     time.sleep(15)
+    return wordle()
 
 
 def tarmac():
@@ -133,9 +133,9 @@ def tarmac():
     """
     print("You are on the tarmac. You are given a key to the terminal.")
     print("You can go to the terminal or stay here.")
-    choice = input("Enter \n '1' to stay here \n '2' to go to the terminal \n 'e' to quit the game \n")
+    choice = input("Enter \n '1' to stay here \n '2' to go to the TERMINAL \n '3' to go to the FUEL TANK \n '4' to go to the ATC TOWER \n '5' to go to the HANGAR \n 'e' to quit the game \n > ")
 
-    while choice != '1' and choice != '2' and choice != 'e':
+    while choice != '1' and choice != '2' and choice != '3' and choice != '4' and choice != '5' and choice != 'e':
         print("Invalid choice. Please enter a valid choice.")
         choice = input("Enter \n '1' to stay here \n '2' to go to the terminal \n 'e' to quit the game \n")
     return choice
@@ -152,9 +152,8 @@ def terminal():
         print("You have all the keys and can go to the air traffic control tower and hangar.")
         return '5'
     print("You are in the terminal. You can go to the lounge, ticket counter, or security checkpoint.")
-    print("You can go to the lounge, ticket counter, or security checkpoint.")
     choice = input(
-        "Enter 'l' to go to the lounge, 't' to go to the ticket counter, or 's' to go to the security checkpoint: ")
+        "Enter \n 'l' to go to the lounge \n 't' to go to the ticket counter \n 's' to go to the security checkpoint \n '1' return to the tarmac \n 'e' to quit the game \n ")
     return choice
 
 
@@ -250,6 +249,7 @@ def ticket_counter():
                 print("You have enough cash to buy fuel. You can go to the fuel station. - stop gambling >:(")
         print("You ran out of cash. Please play again in 15 seconds.")
         time.sleep(15)
+        return 't'
     return '2'
 
 
