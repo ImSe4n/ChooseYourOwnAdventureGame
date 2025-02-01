@@ -56,6 +56,7 @@ import time
 import random
 inventory = []
 cash = 0
+battery = 'not charged'
 
 
 def colored_letter(letter, color):
@@ -286,12 +287,14 @@ def air_traffic_control_tower():
             "You have already visited the air traffic control tower and obtained the items.")
         return '8'
 
-    print("You are in the air traffic control tower. You see a blackbox and radio on the table.")
+    print("You are in the air traffic control tower. You see a blackbox, battery and radio on the table.")
     print("You can pick these items up or leave.")
     choice = input("Enter '7' to get the items: ")
     if choice == '7':
         inventory.append('blackbox')
         inventory.append('radio')
+        inventory.append('battery')
+        print("You have obtained the blackbox, battery and radio.")
     else:
         return '5'
 
@@ -303,9 +306,46 @@ def hangar():
     Parameters: None
     Returns: str
     """
-    print("You are in the hangar. You see the plane and equipment to start the plane.")
-    print("You can play a minigame to start the plane.")
-    choice = input("Enter '8' to start the plane: ")
+    print("You are in the hangar. You see a GPU, staircase, and the plane.")
+    choice = input("Enter: \n 'g' to get the GPU \n 's' to get the staircase \n 'p' to enter the plane \n > ")
+    if choice == 'g':
+        if 'battery' not in inventory:
+            print("You need a battery to start the GPU.")
+            return '5'
+        elif battery == 'not charged':
+            print("The battery is not charged. You must charge it.")
+            return '5'
+        else:
+            print("You have a battery to start the GPU. To start the GPU, I will test your reaction time.")
+            print("When I say GO, hit ENTER as fast as you can.")
+            time.sleep(1)
+            print("Ready")
+            time.sleep(1)
+            print("Steady")
+            time.sleep(random.randint(2, 5))
+            print("GO")
+            tic = time.perf_counter()
+            a = input()
+            toc = time.perf_counter()
+            time_spent = toc - tic
+            if time_spent < 0.28:
+                print(f"You started the GPU in less than 0.27 seconds, the average human reaction time. You are a genius! (You started the GPU in {time_spent:.2f} seconds.)")
+                inventory.append('gpu')
+            else:
+                print(f"You started the GPU in {time_spent:.2f} seconds. You need to improve your reaction time.")
+                return hangar()
+    elif choice == 's':
+        print("You have obtained the staircase.")
+        inventory.append('staircase')
+    elif choice == 'p':
+        if 'gpu' and 'staircase' and 'blackbox' and 'radio' in inventory:
+            print("You have all the items to start the plane.")
+            return plane()
+        else:
+            print("You do not have all the items to start the plane. You need the GPU, staircase, blackbox, and radio. Please go back and get the items.")
+            return '5'
+
+
     return choice
 
 
@@ -318,8 +358,8 @@ def fuel_station():
     """
     print("You are at the fuel station. You can buy fuel to start the plane.")
     print("You can buy fuel to start the plane.")
-    choice = input("Enter '9' to buy fuel: ")
-    if choice == '9':
+    choice = input("Enter 'buy' to buy fuel \n >  ")
+    if choice == 'buy':
         while cash < 70000:
             print("You do not have enough cash to buy fuel. Please go back to the ticket counter to earn more cash.")
             return '2'  # Return to the ticket counter
@@ -356,20 +396,24 @@ def main():
         elif choice == '2':
             choice = terminal()
         elif choice == '3':
-            choice = hangar()
-        elif choice == '4':
             choice = fuel_station()
-        elif choice == '5':
+        elif choice == '4':
             choice = air_traffic_control_tower()
+        elif choice == '5':
+            choice = hangar()
         elif choice == 's':
             choice = security_checkpoint()
         elif choice == 't':
             choice = ticket_counter()
         elif choice == 'l':
             choice = lounge()
+        elif choice == 'p':
+            choice = plane()
+        else:
+            print("Invalid choice. Please enter a valid choice.")
+            choice = input("Enter '1' to start the game or 'e' to exit the game: ")
 
     print("Thanks for playing!")
-
 
 # Call the main function to start the game
 main()
