@@ -473,13 +473,16 @@ def air_traffic_control_tower():
     else:
         print("You are in the air traffic control tower. You see a blackbox, battery and radio on the table.")
         print("You can pick these items up or leave.")
-        choice = input("Enter '7' to get the items: ")
+        choice = input("Enter\n '7' to get the items \n '1' to go back to the tarmac \n 'e' to quit the game \n > ")
+        while choice not in ['7', '1', 'e']:
+            print("Invalid choice. Please enter a valid choice.")
+            choice = input("Enter\n '7' to get the items \n '1' to go back to the tarmac \n 'e' to quit the game \n > ")
         if choice == '7':
             inventory.extend(['blackbox', 'radio', 'battery'])
             print("You have obtained the blackbox, radio and battery.")
-            result = '5'
+            result = '1'
         else:
-            result = '5'
+            result = '1'
     return result
 
 # ----------------------------------------------------------------------
