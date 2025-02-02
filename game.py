@@ -9,9 +9,9 @@ Description: A text-based adventure game where the player plays in minigames to 
 import time
 import random
 
-inventory = ['atc_key', 's_key', 'h_key', 'blackbox', 'radio', 'gpu', 'staircase', 'battery', 'fuel']
+inventory = []
 global cash
-cash = 70000
+cash = 10000
 battery = 'not charged'
 
 
@@ -76,40 +76,44 @@ def wordle():
 
         print(feedback)
 
-    print(f"Game over! The word was: {secret_word}. Please try again in 15 seconds.")
+    print(f"Game over! The word was: {
+          secret_word}. Please try again in 15 seconds.")
     time.sleep(15)
     return security_checkpoint()
 
+
 def hangman():
     # List of words to choose from
-    words = ["python", "programming", "hangman", "challenge", "developer", "algorithm"]
-    
+    words = ["python", "programming", "hangman",
+             "challenge", "developer", "algorithm"]
+
     # Select a random word
     word = random.choice(words)
-    
+
     # Set of unique letters in the word
     word_letters = set(word)
-    
+
     # Set of correctly guessed letters
     guessed_letters = set()
-    
+
     # Number of attempts allowed
     attempts = 6
-    
+
     while attempts > 0 and word_letters:
         # Display the current state of the word
-        display_word = "".join([letter if letter in guessed_letters else "_" for letter in word])
+        display_word = "".join(
+            [letter if letter in guessed_letters else "_" for letter in word])
         print(f"Word: {display_word}")
-        
+
         # Display remaining attempts
         print(f"Attempts left: {attempts}")
 
-        #Display guessed letters
+        # Display guessed letters
         print(f"Guessed letters: {', '.join(guessed_letters)}")
-        
+
         # Get user input
         guess = input("Guess a letter: ").lower()
-        
+
         # Validate the input
         if len(guess) != 1:
             print("Please enter exactly one letter.")
@@ -125,20 +129,22 @@ def hangman():
             print("Wrong guess!")
             guessed_letters.add(guess)
             attempts -= 1
-        
+
         # Display guessed letters
         print(f"Guessed letters: {', '.join(guessed_letters)}")
         print()
-    
+
     # Game over message
     if not word_letters:
         print(f"Congratulations! You guessed the word: {word}")
         inventory.append('h_key')
         return '2'
     else:
-        print(f"Game over! The word was: {word}. Please try again in 15 seconds.")
+        print(f"Game over! The word was: {
+              word}. Please try again in 15 seconds.")
         time.sleep(15)
         return office()
+
 
 def tarmac():
     """
@@ -198,7 +204,7 @@ def lounge():
         print("Invalid choice. Please enter a valid choice.")
         choice = input(
             "Enter \n 'start' to begin the minigame \n '2' to go back to the terminal \n 'e' to quit the game \n > ")
-    
+
     if choice == 'start':
         print("You must guess the number from 1-50 to get the key. You will have 5 tries. I will tell you if the number is higher or lower.")
         tries = 5
@@ -213,7 +219,8 @@ def lounge():
                 print("Invalid input. Please enter a number.")
                 continue
             while guess < low or guess > high:
-                print("Invalid input. Please enter a number between", low, "and", high, ".")
+                print("Invalid input. Please enter a number between",
+                      low, "and", high, ".")
                 guess = int(input("Enter your guess: "))
             if guess == number:
                 print("You got the key!")
@@ -241,15 +248,18 @@ def ticket_counter():
     """
     global cash
     if cash >= 70000:
-        print("You have enough cash to buy fuel. You can go to the fuel station. - stop gambling >:(")
+        print(
+            "You have enough cash to buy fuel. You can go to the fuel station. - stop gambling >:(")
         return '2'
 
     print("You are at the ticket counter. You can play a minigame to earn cash to buy fuel.")
     print("You can play blackjack against the computer to earn cash to buy fuel.")
-    choice = input("Enter \n 'start' to play the minigame \n '2' to return to the main terminal \n 'e' to quit the game \n > ")
+    choice = input(
+        "Enter \n 'start' to play the minigame \n '2' to return to the main terminal \n 'e' to quit the game \n > ")
     while choice != 'start' and choice != '2' and choice != 'e':
         print("Invalid choice. Please enter a valid choice.")
-        choice = input("Enter \n 'start' to play the minigame \n '2' to return to the main terminal \n 'e' to quit the game \n > ")
+        choice = input(
+            "Enter \n 'start' to play the minigame \n '2' to return to the main terminal \n 'e' to quit the game \n > ")
     if choice == 'start':
         print("You will play blackjack against the computer. You will start with $10000. Enter 'hit' or 'stand' to play.")
         cash = 10000
@@ -290,13 +300,15 @@ def ticket_counter():
                 else:
                     print("You lose.")
             if cash >= 70000:
-                print("You have enough cash to buy fuel. You can go to the fuel station. - stop gambling >:(")
+                print(
+                    "You have enough cash to buy fuel. You can go to the fuel station. - stop gambling >:(")
                 return '2'
         print("You ran out of cash. Please try again in 15 seconds.")
         time.sleep(15)
         return 't'
     else:
         return choice
+
 
 def security_checkpoint():
     """
@@ -324,6 +336,7 @@ def security_checkpoint():
         return wordle()
     else:
         return choice
+
 
 def office():
     """
@@ -357,9 +370,10 @@ def air_traffic_control_tower():
     Returns: str
     """
     if 'atc_key' not in inventory:
-        print("You need the air traffic control key to enter the air traffic control tower.")
+        print(
+            "You need the air traffic control key to enter the air traffic control tower.")
         return '1'
-    
+
     if 'blackbox' and 'radio' and 'battery' in inventory:
         print(
             "You have already visited the air traffic control tower and obtained the items.")
@@ -387,7 +401,7 @@ def hangar():
     if 'h_key' not in inventory:
         print("You need the hangar key to enter the hangar.")
         return '1'
-    
+
     print("You are in the hangar. You see a GPU, staircase, and the plane.")
     choice = input(
         "Enter: \n 'g' to get the GPU \n 's' to get the staircase \n 'p' to enter the plane \n > ")
@@ -454,9 +468,11 @@ def fuel_station():
     global cash
     print("You are at the fuel station. You can buy fuel to start the plane.")
     print("You can buy fuel to start the plane.")
-    choice = input("Enter \n 'buy' to buy fuel \n '1' to go back to the tarmac \n 'e' to quit the game \n >  ")
+    choice = input(
+        "Enter \n 'buy' to buy fuel \n '1' to go back to the tarmac \n 'e' to quit the game \n >  ")
     while choice != 'buy' and choice != '1' and choice != 'e':
-        choice = input("Invalid choice. Please enter \n 'buy' to buy fuel \n '1' to go back to the tarmac \n 'e' to quit the game \n >  ")
+        choice = input(
+            "Invalid choice. Please enter \n 'buy' to buy fuel \n '1' to go back to the tarmac \n 'e' to quit the game \n >  ")
     if choice == 'buy':
         while cash < 70000:
             print("You do not have enough cash to buy fuel. Please go back to the ticket counter to earn more cash.")
@@ -480,9 +496,11 @@ def plane():
     print("You are at the plane. All you need to do is start the plane to win the game.")
     choice = input("Enter 'start' to win the game! \n > ")
     while choice != 'start':
-        choice = input("Invalid choice. Please enter 'start' to win the game! \n > ")
+        choice = input(
+            "Invalid choice. Please enter 'start' to win the game! \n > ")
     if choice == 'start':
-        print("Congratulations! You have started the plane and escaped the airport. You win!")
+        print(
+            "Congratulations! You have started the plane and escaped the airport. You win!")
         return 'e'
     else:
         return choice
