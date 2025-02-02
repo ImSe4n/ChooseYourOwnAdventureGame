@@ -499,7 +499,9 @@ def hangar():
         result = '1'
     else:
         print("You are in the hangar. You see a GPU, staircase, and the plane.")
-        choice = input("Enter: \n 'g' to get the GPU \n 's' to get the staircase \n 'p' to enter the plane \n > ")
+        choice = input("Enter: \n 'g' to get the GPU \n 's' to get the staircase \n 'p' to enter the plane \n '1' to go back to the tarmac \n 'e' to quit the game \n > ")
+        while choice not in ['g', 's', 'p', '1', 'e']:
+            choice = input("Invalid choice. Please enter: \n 'g' to get the GPU \n 's' to get the staircase \n 'p' to enter the plane \n '1' to go back to the tarmac \n 'e' to quit the game \n > ")
         if choice == 'g':
             # Check for prerequisites before starting the GPU reaction test.
             if 'gpu' in inventory:
