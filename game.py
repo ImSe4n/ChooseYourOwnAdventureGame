@@ -9,12 +9,9 @@ Description: A text-based adventure game where the player plays in minigames to 
 import time
 import random
 
-MAX_NUMBER_OF_ATTEMPTS_WORDLE = 6
-MAX_NUMBER_GUESSES_NUMBER = 6
-
-inventory = []
+inventory = ['atc_key', 's_key', 'h_key', 'blackbox', 'radio', 'gpu', 'staircase', 'battery', 'fuel']
 global cash
-cash = 0
+cash = 70000
 battery = 'not charged'
 
 
@@ -65,7 +62,7 @@ def wordle():
 
         if guess == secret_word:
             print("\033[92mCongratulations! You guessed the word!\033[0m")
-            inventory.append('s_key')
+            inventory.append('atc_key')
             return '2'
 
         feedback = ""
@@ -79,11 +76,69 @@ def wordle():
 
         print(feedback)
 
-    print(f"Game over! The word was: {
-          secret_word}. Please try again in 15 seconds.")
+    print(f"Game over! The word was: {secret_word}. Please try again in 15 seconds.")
     time.sleep(15)
     return security_checkpoint()
 
+def hangman():
+    # List of words to choose from
+    words = ["python", "programming", "hangman", "challenge", "developer", "algorithm"]
+    
+    # Select a random word
+    word = random.choice(words)
+    
+    # Set of unique letters in the word
+    word_letters = set(word)
+    
+    # Set of correctly guessed letters
+    guessed_letters = set()
+    
+    # Number of attempts allowed
+    attempts = 6
+    
+    while attempts > 0 and word_letters:
+        # Display the current state of the word
+        display_word = "".join([letter if letter in guessed_letters else "_" for letter in word])
+        print(f"Word: {display_word}")
+        
+        # Display remaining attempts
+        print(f"Attempts left: {attempts}")
+
+        #Display guessed letters
+        print(f"Guessed letters: {', '.join(guessed_letters)}")
+        
+        # Get user input
+        guess = input("Guess a letter: ").lower()
+        
+        # Validate the input
+        if len(guess) != 1:
+            print("Please enter exactly one letter.")
+        elif not guess.isalpha():
+            print("Please enter a valid letter of the alphabet.")
+        elif guess in guessed_letters:
+            print("You already guessed that letter. Try again.")
+        elif guess in word_letters:
+            print("Good guess!")
+            guessed_letters.add(guess)
+            word_letters.discard(guess)
+        else:
+            print("Wrong guess!")
+            guessed_letters.add(guess)
+            attempts -= 1
+        
+        # Display guessed letters
+        print(f"Guessed letters: {', '.join(guessed_letters)}")
+        print()
+    
+    # Game over message
+    if not word_letters:
+        print(f"Congratulations! You guessed the word: {word}")
+        inventory.append('h_key')
+        return '2'
+    else:
+        print(f"Game over! The word was: {word}. Please try again in 15 seconds.")
+        time.sleep(15)
+        return office()
 
 def tarmac():
     """
@@ -116,11 +171,11 @@ def terminal():
         return '1'
     print("You are in the terminal. You can go to the lounge, ticket counter, or security checkpoint.")
     choice = input(
-        "Enter \n 'l' to go to the lounge \n 't' to go to the ticket counter \n 's' to go to the security checkpoint \n '1' return to the tarmac \n 'e' to quit the game \n > ")
-    while choice != 'l' and choice != 't' and choice != 's' and choice != '1' and choice != 'e':
+        "Enter \n 'l' to go to the lounge \n 't' to go to the ticket counter \n 's' to go to the security checkpoint \n 'o' to go to the airline office \n '1' return to the tarmac \n 'e' to quit the game \n > ")
+    while choice != 'l' and choice != 't' and choice != 's' and choice != 'o' and choice != '1' and choice != 'e':
         print("Invalid choice. Please enter a valid choice.")
         choice = input(
-            "Enter \n 'l' to go to the lounge \n 't' to go to the ticket counter \n 's' to go to the security checkpoint \n '1' return to the tarmac \n 'e' to quit the game \n > ")
+            "Enter \n 'l' to go to the lounge \n 't' to go to the ticket counter \n 's' to go to the security checkpoint \n 'o' to go to the airline office \n '1' return to the tarmac \n 'e' to quit the game \n > ")
     return choice
 
 
@@ -190,14 +245,13 @@ def ticket_counter():
         return '2'
 
     print("You are at the ticket counter. You can play a minigame to earn cash to buy fuel.")
-    print("You can blackjack against the computer to earn cash to buy fuel.")
-    choice = input(
-        "Enter \n 'start' to play the minigame \n '2' to return to the main terminal \n 'e' to quit the game \n > ")
+    print("You can play blackjack against the computer to earn cash to buy fuel.")
+    choice = input("Enter \n 'start' to play the minigame \n '2' to return to the main terminal \n 'e' to quit the game \n > ")
     while choice != 'start' and choice != '2' and choice != 'e':
         print("Invalid choice. Please enter a valid choice.")
         choice = input("Enter \n 'start' to play the minigame \n '2' to return to the main terminal \n 'e' to quit the game \n > ")
     if choice == 'start':
-        print("You will play blackjack against the computer. You will start with $10000. Enter hit or stand to play.")
+        print("You will play blackjack against the computer. You will start with $10000. Enter 'hit' or 'stand' to play.")
         cash = 10000
         while cash > 0:
             print("Your cash: $", cash)
@@ -210,8 +264,8 @@ def ticket_counter():
                 print("Invalid bet. Please enter a valid bet.")
                 bet = int(input("Enter your bet: "))
 
-            player_hand = random.randint(1, 11) + random.randint(1, 11)
-            computer_hand = random.randint(1, 11) + random.randint(1, 11)
+            player_hand = random.randint(1, 11)
+            computer_hand = random.randint(1, 11)
             print("Your hand: ", player_hand)
             cash -= bet
 
@@ -224,29 +278,25 @@ def ticket_counter():
                 print("Your hand: ", player_hand)
                 if player_hand > 21:
                     print("You busted! You lose.")
-                    cash -= bet
                     break
                 player_choice = input("Enter 'hit' or 'stand': ")
-            if player_hand < 21:
+            if player_hand <= 21:
                 while computer_hand < 17:
                     computer_hand += random.randint(1, 11)
+                print("Computer's hand: ", computer_hand)
                 if computer_hand > 21 or player_hand > computer_hand:
                     print("You win!")
                     cash += bet * 2
                 else:
                     print("You lose.")
-                    cash -= bet
-            elif player_hand == 21:
-                print("You win!")
-                cash += bet * 2
             if cash >= 70000:
                 print("You have enough cash to buy fuel. You can go to the fuel station. - stop gambling >:(")
-        print("You ran out of cash. Please play again in 15 seconds.")
+                return '2'
+        print("You ran out of cash. Please try again in 15 seconds.")
         time.sleep(15)
         return 't'
     else:
         return choice
-
 
 def security_checkpoint():
     """
@@ -255,6 +305,9 @@ def security_checkpoint():
     Parameters: None
     Returns: str
     """
+    if 's_key' not in inventory:
+        print("You don't have the key to the security checkpoint. Please go to the lounge to get the key.")
+        return '2'
     if 'atc_key' in inventory:
         print("You have already visited the security checkpoint and obtained the ATC key.")
         return '2'
@@ -268,7 +321,30 @@ def security_checkpoint():
         choice = input(
             "Enter \n 'start' to begin the minigame \n '2' to go back to the main terminal \n 'e' to quit the game \n > ")
     if choice == 'start':
-        wordle()
+        return wordle()
+    else:
+        return choice
+
+def office():
+    """
+    Function: office
+    Description: This function represents the airline office location where the player can get the hangar key.
+    Parameters: None
+    Returns: str
+    """
+    if 'h_key' in inventory:
+        print("You have already visited the airline office and obtained the hangar key.")
+        return '2'
+    print("You are at the airline office. You see the hangar key on the desk.")
+    print("You can play hangman to get the key.")
+    choice = input(
+        "Enter \n 'start' to begin the minigame \n '2' to go back to the main terminal \n 'e' to quit the game \n > ")
+    while choice != 'start' and choice != '2' and choice != 'e':
+        print("Invalid choice. Please enter a valid choice.")
+        choice = input(
+            "Enter \n 'start' to begin the minigame \n '2' to go back to the main terminal \n 'e' to quit the game \n > ")
+    if choice == 'start':
+        return hangman()
     else:
         return choice
 
@@ -316,11 +392,11 @@ def hangar():
     choice = input(
         "Enter: \n 'g' to get the GPU \n 's' to get the staircase \n 'p' to enter the plane \n > ")
     if choice == 'g':
+        if 'gpu' in inventory:
+            print("You have already obtained the GPU.")
+            return '5'
         if 'battery' not in inventory:
             print("You need a battery to start the GPU.")
-            return '5'
-        elif battery == 'not charged':
-            print("The battery is not charged. You must charge it.")
             return '5'
         else:
             print(
@@ -337,22 +413,27 @@ def hangar():
             toc = time.perf_counter()
             time_spent = toc - tic
             if time_spent < 0.28:
-                print(f"You started the GPU in less than 0.27 seconds, the average human reaction time. You are a genius! (You started the GPU in {
+                print(f"You started the GPU in less than or exactly 0.27 seconds, the average human reaction time. You are a genius! (You started the GPU in {
                       time_spent:.2f} seconds.)")
                 inventory.append('gpu')
+                return '5'
             else:
                 print(f"You started the GPU in {
                       time_spent:.2f} seconds. You need to improve your reaction time.")
                 return hangar()
     elif choice == 's':
+        if 'staircase' in inventory:
+            print("You have already obtained the staircase.")
+            return '5'
         print("You have obtained the staircase.")
         inventory.append('staircase')
+        return '5'
     elif choice == 'p':
-        if 'gpu' and 'staircase' and 'blackbox' and 'radio' in inventory:
+        if 'gpu' and 'staircase' and 'blackbox' and 'radio' and 'fuel' in inventory:
             print("You have all the items to start the plane.")
             return plane()
         else:
-            print("You do not have all the items to start the plane. You need the GPU, staircase, blackbox, and radio. Please go back and get the items.")
+            print("You do not have all the items to start the plane. You need the GPU, staircase, blackbox, fuel, and radio. Please go back and get the items.")
             return '5'
 
     else:
@@ -366,18 +447,27 @@ def fuel_station():
     Parameters: None
     Returns: str
     """
+    if 'fuel' in inventory:
+        print("You have already bought fuel.")
+        return '1'
+
     global cash
     print("You are at the fuel station. You can buy fuel to start the plane.")
     print("You can buy fuel to start the plane.")
-    choice = input("Enter 'buy' to buy fuel \n >  ")
+    choice = input("Enter \n 'buy' to buy fuel \n '1' to go back to the tarmac \n 'e' to quit the game \n >  ")
+    while choice != 'buy' and choice != '1' and choice != 'e':
+        choice = input("Invalid choice. Please enter \n 'buy' to buy fuel \n '1' to go back to the tarmac \n 'e' to quit the game \n >  ")
     if choice == 'buy':
         while cash < 70000:
             print("You do not have enough cash to buy fuel. Please go back to the ticket counter to earn more cash.")
-            return '2'  # Return to the ticket counter
+            return '3'  # Return to the ticket counter
         else:
-            print("You have enough cash to buy fuel. You can start the plane.")
+            print("You have bought fuel for $70000. You can start the plane.")
             cash -= 70000
-        return '10'
+            inventory.append('fuel')
+        return '1'
+    else:
+        return choice
 
 
 def plane():
@@ -387,10 +477,15 @@ def plane():
     Parameters: None
     Returns: str
     """
-    print("You are at the plane. You must start the plane to win the game.")
-    print("You must start the plane to win the game.")
-    choice = input("Enter 'e' to exit the game: ")
-    return choice
+    print("You are at the plane. All you need to do is start the plane to win the game.")
+    choice = input("Enter 'start' to win the game! \n > ")
+    while choice != 'start':
+        choice = input("Invalid choice. Please enter 'start' to win the game! \n > ")
+    if choice == 'start':
+        print("Congratulations! You have started the plane and escaped the airport. You win!")
+        return 'e'
+    else:
+        return choice
 
 
 def main():
@@ -418,6 +513,8 @@ def main():
             choice = ticket_counter()
         elif choice == 'l':
             choice = lounge()
+        elif choice == 'o':
+            choice = office()
         elif choice == 'p':
             choice = plane()
 
